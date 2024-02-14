@@ -28,3 +28,7 @@ img {
     padding: 60px; /* Creates space between the border and the content */
     border-radius: 60px;
   }
+
+  p {
+    text-align: justify;
+  }
