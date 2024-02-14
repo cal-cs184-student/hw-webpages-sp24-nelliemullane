@@ -10,13 +10,13 @@
         <h1>OVERVIEW :</h1>
         <p>
         <br>
-Homework 1 involves implementing graphics rendering techniques: rasterization, anti aliasing, transforms, barycentric coordinates, and texture mapping. 
+Homework 1 involves implementing graphics rendering techniques: rasterization, anti aliasing, transforms, barycentric coordinates and interpolation, and texture mapping. 
 <br>
 
 In task 1, we implement triangle rasterization using the point-in-triangle test with a sample point at the center of each pixel. The difficulties with this task were making sure rasterization occurred properly regardless of the inputted winding order of the vertices and determining how to make the run time at least as fast as iterating over each pixel in the minimum continuing box. We also made sure all edges were properly drawn 
 <br>
 
-Task 2 extends from the first by incorporating supersampling as an anti-aliasing technique. We modified the rasterization pipeline by increasing the size of the sample_buffer to accommodate the super sampling (multiple samples are taken for each pixel). Our difficulties with this task manly revolved around how we would keep our fill_pixel function consistent with how we filled the sample buffer during super sampling, as well as keeping the indexing consistent for resolve_to_framebuffer() 
+Task 2 extends from the first by incorporating supersampling as an anti-aliasing technique. We modified the rasterization pipeline by increasing the size of the sample_buffer to accommodate the super sampling (multiple samples are taken for each pixel). Our difficulties with this task mainly revolved around how we would keep our fill_pixel function consistent with how we filled the sample buffer during super sampling, as well as keeping the indexing consistent for resolve_to_framebuffer() 
 <br>
 In task 3, we implemented translation, scaling and rotation transforms according to the SVG spec. The main difficulty with this task was making sure to change the degrees passed into the rotation function into radians. We then modified the provided robot man image to look like he was doing a jumping jack. Here the difficulty was determining how much to rotate each part of the robot’s body. 
 <br>
@@ -38,7 +38,7 @@ I sample at the integer value plus 0.5 of each x and y coordinate
 Then I compute and input the sample into the three line equations 
 If the output from the three line equation tests is greater than or equal to zero, then I fill the pixel with the inputted color.  ::<br>
 Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle. <br>
- My algorithm is no worse than one that checks each sample within the bounding box of the triangle because I compute the smallest bounding box of the triangle then iterate only over the values within this smallest bounding box. I found this bounding box by finding the minimum x vertex clues, maximum x vertex value, minimum y vertex value, and maximum y vertex value. Then I used these coordinates as the bounding box.   <br>
+ My algorithm is no worse than one that checks each sample within the bounding box of the triangle because I compute the smallest bounding box of the triangle then iterate only over the values within this smallest bounding box. I found this bounding box by finding the minimum x vertex value, maximum x vertex value, minimum y vertex value, and maximum y vertex value. Then I used these coordinates as the bounding box.   <br>
 Show a png screenshot of basic/test4.svg with the default viewing parameters and with the pixel inspector centered on an interesting part of the scene.<br>
 </p>
 
@@ -55,10 +55,10 @@ Then in rasterize_triange, the algorithm iterates through the locations of subsa
 In resolve_to_framebuffer, the function iterates over sample_rate subsamples at a time, computes their average color, and paints the mean color in the appropriate spot of the framebuffer.
 The point of this algorithm is to remove jagged edges of skinny triangles, and filter high frequencies out of images.
 Since we changed the size of the sample buffer, we had to change how we indexed it in fill_pixel, set_framebuffer_target, and set_sample_rate. Since it holds more samples, the number of samples that represent a single pixel must be adjusted.
-Supersampling allows to increase in the sampling frequency, then (since the screen can’t display that many pixels) convolutes subsamples into pixels, which lowers the frequency of the picture at that area.<br>
+Supersampling allows an increase in the sampling frequency, then (since the screen can’t display that many pixels) convolutes subsamples into pixels, which lowers the frequency of the picture at that area.<br>
 Show png screenshots of basic/test4.svg with the default viewing parameters and sample rates 1, 4, and 16 to compare them side-by-side. Position the pixel inspector over an area that showcases the effect dramatically; for example, a very skinny triangle corner. Explain why these results are observed. 
 <br>
-We see as the sampling rate increases, the areas near the edges of the triangles have smoother transitions. The reason why this occurs is because as the sampling rate increases, we send an averaged color to each pixel where the average is constructed from more data points and hence provides a smoother transition. More sample points better approximates high frequency changes such as the edges. 
+We see as the sampling rate increases, the areas near the edges of the triangles have smoother transitions. Additionally, the corner of the small skinny triangle gets more connected as the sampling rate increases. The reason why this occurs is because as the sampling rate increases, the color of each pixel is constructed from more data points and hence provides a smoother transition. More sample points better approximate high frequency changes such as the edges and skinny corners.  
 <br> 
 </p>
 <!--  2  -->
@@ -111,7 +111,7 @@ Barycentric coordinates are coordinates that give us an indication of a point’
 		
         <br>
         <p>
-        In this image, we can see each vertex is colored red blue green. Then each point within the triangle has a color relative to its relationship to each vertex. Points closer to the green have sharper green, then as they get closer to the center, it is more of a blend. 
+        In this image, we can see each vertex is colored red blue green. Then each point within the triangle has a color relative to its relationship to each vertex. For example, points closer to the green vertex have brighter green, then as they get closer to the center, it is more of a blend. 
         
         Show a png screenshot of svg/basic/test7.svg with default viewing parameters and sample rate 1. If you make any additional images with color gradients, include them.
             </p>
@@ -121,8 +121,8 @@ Barycentric coordinates are coordinates that give us an indication of a point’
          <!--TASK 5-->
          <h2>TASK 5 :</h2>
          <p>Explain pixel sampling in your own words and describe how you implemented it to perform texture mapping. Briefly discuss the two different pixel sampling methods, nearest and bilinear. <br>
-         The process of pixel sampling entails obtaining a lot of pixel measurements within an image or certain parts of an image in order to represent the image in a lower resolution. We can use multiple different approaches, such as nearest sampling or bilinear sampling, but these measurements give us data which we can use to represent the image in a different resolution. In order to pixel sample, we get information from a source, we then “sample” each pixel to determine it’s color. “Sampling” can occur through different methods where an inputted coordinate is used to obtain a value or an approximation/average of a value from the source containing information about coloring/texturing. 
-         We implemented pixel sampling within our rasterize_textured_triangle() function (which takes in vertex coordinates and  texture coordinates for vertex), by iterating over each pixel within a minimum spanning box around the inputted triangle (for triangles where the vertices were entered in clockwise order, we swap them to be counterclockwise to maintain consistency). We also maintain super-sampling features within this function by iterating over subsamples for each pixel if the sample_rate is greater than 1. For each pixel, we compute barycentric coordinates to determine the pixel’s relative position within the triangle. We use the barycentric coordinates to obtain the pixel’s texture coordinates. Then we sample the texture map using the inputted pixel sampling method (nearest or bilinear) to retrieve the desired color/texture for that pixel. Finally, we add this value to the appropriate part in the sample_buffer. The sample_buffer is later appropriately mapped to the frame buffer in resolve_to_framebuffer(),
+            Pixel sampling is the process of obtaining attributes, such as color, for each image or regain of an image to represent it at a particular resolution. Various approaches, such as nearest sampling or bilinear sampling, can be used to gather the data or “sample” each pixel. These methods retrieve information from a source using the pixel’s coordinates and then approximate a value to assign to each pixel.   
+         We implemented pixel sampling within our rasterize_textured_triangle() function (which takes in vertex coordinates and  texture coordinates for vertex), by iterating over each pixel within a minimum spanning box around the inputted triangle (for triangles where the vertices were entered in clockwise order, we swap them to be counterclockwise to maintain consistency). We also maintain super-sampling features within this function by iterating over subsamples for each pixel if the sample_rate is greater than 1. For each pixel, we compute barycentric coordinates to determine the pixel’s relative position within the triangle. We use the barycentric coordinates to obtain the pixel’s texture coordinates. Then we sample the texture map using the input pixel sampling method (nearest or bilinear) to retrieve the desired color/texture for that pixel. Finally, we add this value to the appropriate part in the sample_buffer. The sample_buffer is later appropriately mapped to the frame buffer in resolve_to_framebuffer(),
          Nearest sampling method: 
          In this method of sampling, the texel closest to the sample point is the value directly applied to that sample point. 
          We implemented this by rounding the sample coordinates to the nearest integer with correlates to texture positions on a texture map 
