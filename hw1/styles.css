@@ -10,7 +10,7 @@ img {
   }
 
   img:hover {
-    transform: scale(2.4); /* Slightly scale up on hover */
+    transform: scale(2.4);
   }
 
   h1 {
@@ -24,8 +24,8 @@ img {
   }
 
   .container {
-    border: 6px solid navy; /* Creates a visible border around the container */
-    padding: 60px; /* Creates space between the border and the content */
+    border: 6px solid navy; 
+    padding: 60px; 
     border-radius: 60px;
   }
 
