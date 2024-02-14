@@ -2,6 +2,97 @@
 	<head>
 	</head>
 	<body>
-		Homework 1 index.html here
+		TASK 1 
+Walk through how you rasterize triangles in your own words.
+First I determine the orientation of the inputted vertices using the cross product. 
+If the vertices are in clockwise order, I swap the x and y values of  (x1, y1) and (x2, y2) 
+Then I iterate across the integer pixel values of the smallest bounding box (explained in next part). 
+I sample at the integer value plus 0.5 of each x and y coordinate 
+Then I compute and input the sample into the three line equations 
+If the output from the three line equation tests is greater than or equal to zero, then I fill the pixel with the inputted color. 
+Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle.
+ My algorithm is no worse than one that checks each sample within the bounding box of the triangle because I compute the smallest bounding box of the triangle then iterate only over the values within this smallest bounding box. I found this bounding box by finding the minimum x vertex clues, maximum x vertex value, minimum y vertex value, and maximum y vertex value. Then I used these coordinates as the bounding box. 
+Show a png screenshot of basic/test4.svg with the default viewing parameters and with the pixel inspector centered on an interesting part of the scene.
+
+Extra credit: Explain any special optimizations you did beyond simple bounding box triangle rasterization, with a timing comparison table (we suggest using the c++ clock() function around the svg.draw() command in DrawRend::redraw() to compare millisecond timings with your various optimizations off and on).
+TASK 2 
+Walk through your supersampling algorithm and data structures. Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles.
+The supersampling algorithm takes in a sampling rate and outputs an antialiased image. In our algorithm, we first resize the sample buffer to have enough space for all the subsamples.
+Then in rasterize_triange, the algorithm iterates through the locations of subsamples, checks if they fall within the triangle, and color the subsamples using the requested color.
+In resolve_to_framebuffer, the function iterates over sample_rate subsamples at a time, computes their average color, and paints the mean color in the appropriate spot of the framebuffer.
+The point of this algorithm is to remove jagged edges of skinny triangles, and filter high frequencies out of images.
+Since we changed the size of the sample buffer, we had to change how we indexed it in fill_pixel, set_framebuffer_target, and set_sample_rate. Since it holds more samples, the number of samples that represent a single pixel must be adjusted.
+Supersampling allows to increase in the sampling frequency, then (since the screen can’t display that many pixels) convolutes subsamples into pixels, which lowers the frequency of the picture at that area.
+Show png screenshots of basic/test4.svg with the default viewing parameters and sample rates 1, 4, and 16 to compare them side-by-side. Position the pixel inspector over an area that showcases the effect dramatically; for example, a very skinny triangle corner. Explain why these results are observed.
+
+
+
+Extra credit: If you implemented alternative antialiasing methods, describe them and include comparison pictures demonstrating the difference between your method and grid-based supersampling.
+TASK 3 
+Create an updated version of svg/transforms/robot.svg with cubeman doing something more interesting, like waving or running. Feel free to change his colors or proportions to suit your creativity. Save your svg file as my_robot.svg in your docs/ directory and show a png screenshot of your rendered drawing in your write-up. Explain what you were trying to do with cubeman in words.
+
+We are trying to make cube man look like he is doing a jumping jack 
+This was achieved by rotating and shifting his arms and legs outwardly, and then again rotating and shifting his lower arm and legs inwardly. 
+More specifically, his arms were rotated outward by 20 degrees, and his legs by 45 degrees. Then the lower legs were roasted inwardly by 30 degrees and the arms by 45 degrees. Then shifts were applied to each body part to agree with the rotations. 
+TASK4 
+Explain barycentric coordinates in your own words and use an image to aid you in your explanation. One idea is to use a svg file that plots a single triangle with one red, one green, and one blue vertex, which should produce a smoothly blended color triangle.
+Barycentric coordinates are coordinates that give us an indication of a point’s position relative to certain vertices. In our case, it tells us our sample point’s position relative to our triangle’s vertices. The Barcycentric coordinates allow us to represent points within a triangle as a weighted sum of the vertices. The weights will be alpha beta and gamma, where alpha + beta + gamma = 1. If any weight is less than zero then the point does not lie within the triangle. 
+
+In this image, we can see each vertex is colored red blue green. Then each point within the triangle has a color relative to its relationship to each vertex. Points closer to the green have sharper green, then as they get closer to the center, it is more of a blend. 
+Show a png screenshot of svg/basic/test7.svg with default viewing parameters and sample rate 1. If you make any additional images with color gradients, include them.
+
+Task 5 (15 pts)
+Explain pixel sampling in your own words and describe how you implemented it to perform texture mapping. Briefly discuss the two different pixel sampling methods, nearest and bilinear.
+In general, pixel sampling is a method for determining the color of each pixel within a screen. In order to pixel sample, we get information from a source, we then “sample” each pixel to determine it’s color. “Sampling” can occur through different methods where an inputted coordinate is used to obtain a value or an approximation/average of a value from the source containing information about coloring/texturing. 
+We implemented pixel sampling within our rasterize_textured_triangle() function (which takes in vertex coordinates and  texture coordinates for vertex), by iterating over each pixel within a minimum spanning box around the inputted triangle (for triangles where the vertices were entered in clockwise order, we swap them to be counterclockwise to maintain consistency). We also maintain super-sampling features within this function by iterating over subsamples for each pixel if the sample_rate is greater than 1. For each pixel, we compute barycentric coordinates to determine the pixel’s relative position within the triangle. We use the barycentric coordinates to obtain the pixel’s texture coordinates. Then we sample the texture map using the inputted pixel sampling method (nearest or bilinear) to retrieve the desired color/texture for that pixel. Finally, we add this value to the appropriate part in the sample_buffer. The sample_buffer is later appropriately mapped to the frame buffer in resolve_to_framebuffer(),
+Nearest sampling method: 
+In this method of sampling, the texel closest to the sample point is the value directly applied to that sample point. 
+We implemented this by rounding the sample coordinates to the nearest integer with correlates to texture positions on a texture map 
+Although fast, this method tends to produce more pixelated results 
+Bilinear sampling method: 
+In this method, we linearly interpolate the color/texture values of the four nearest textels to the sample points. 
+First , we use the texture coordinates of our sample points to obtain the values of the texels surrounding our sample point. 
+Then we compute the fractional offsets within the texels to determine the weights for interpolation 
+Then use two helper horizontal interpolations (the top horizontal and bottom horizontal) using the horizontal fractional offset/weight.  
+Then we interpolate those values hporizontally using the horizontal fractional offset/weight.
+This final interpolated color/texture is applied to the sample pixel. 
+Although it requires more computation than nearest sampling, bilinear sampling creates smoother transitions between each pixel, improving the quality of an image. 
+Check out the svg files in the svg/texmap/ directory. Use the pixel inspector to find a good example of where bilinear sampling clearly defeats nearest sampling. Show and compare four png screenshots using nearest sampling at 1 sample per pixel, nearest sampling at 16 samples per pixel, bilinear sampling at 1 sample per pixel, and bilinear sampling at 16 samples per pixel.
+
+
+
+
+Comment on the relative differences. Discuss when there will be a large difference between the two methods and why.
+Comparing nearest and bilinear at 1 sample per pixel: 
+While both look more pixilated than an increased sample rate image,  the windows on the campanile look smoother in the bilinearly sampled image. Additionally, in the nearest sample method image, there is a more drastic difference in each pixel’s colors where we have high frequency changes occurring, whereas the bilinally sampled image does a better job of transitioning these regions. 
+Comparing nearest and bilinear at 16 samples per pixel: 
+In these two images, the differences between the two sampling methods is less obvious as the super sampling takes care of the aliasing caused in both types of sampling. That being said, close inspection does show that the nearest neighbor sampled image still seems a bit more pixelated than the bilinear image. 
+In summary, the differences between the two methods is largest when we have lower sampling rates. While nearest neighbor sampling causes more aliasing than bilinear, the higher sampling rates resolves a lot of the aliasing caused by both methods. 
+Task 6 (25 pts)
+Explain level sampling in your own words and describe how you implemented it for texture mapping.
+Level sampling is a process for selecting the correct level of detail for a texture map. We have a pre-computed set of texture maps (mip-maps) where levels are progressively smaller versions of the original texture map. A pixel’s mip map level correlates to  the amount of detail needed to color or texturize that pixel. Each level on a mip-map contains a downsampled version of the original texture. Level 0 is the original, with subsequent levels becoming smaller. Different methods can be used to determine the mip-map level.  In our case, we had Zeroth, Nearest, and Linear. In summary, pixel sampling involves determining a mip-map level for each pixel. 
+Our implementation for texture mapping builds off the pixel sampling for texture mappings. In addition to the implementation used for Task 5, we implemented a get_level function. This function selects a MipLevel for texture sampling using the texel density in screen space. The function uses a SampleParams struct as input which contains the following arrays: p_uv ( the texture coordinates of the pixel being sampled) and  p_dx_uv , and p_dy_uv (the differences in UV texture coordinates between adjacent pixels ).  We scale the differences by the width and height of the texture image to match the texel density. Then the maxim norm of these differences is calculated and the miplevel index is the logarithm base 2 of this maxim norm. Again, in addition to the implementations used in task 5, for each pixel we construct the SampleParam struct within the rasterize_textured_triangle function. The struct contains the UV texture coordinates and their differentials for the get_level function. We then determine the appropriate MipLevel index for each pixel  based on the level sampling method used in that moment (lsm). Nearest neighbor sampling selects the nearest appropriate MipLevela and passes it into the nearest or bilinear sample functions. Bilinear Level Sampling computes the miplevel as a continuous number, then computes an interpolated texture value from the two adjacent texture levels using the proportional weight of the continuous level number. 
+You can now adjust your sampling technique by selecting pixel sampling, level sampling, or the number of samples per pixel. Describe the tradeoffs between speed, memory usage, and antialiasing power between the three various techniques.
+Pixel sampling: 
+Speed: the pixel sampling methods that require more computation are slower than those that require less. In our case, nearest neighbor sampling requires less computation than bilinear and hence produces faster rendering times. 
+Memory usage: both bilinear and nearest neighbor pixel sampling have similar memory usage from the process of accessing texels from the texture map. Bilinear might have slightly more memory usage due to the interpolation process. 
+Antialiasing power: BIlinear has stronger antialiasing power compared to nearest neighbor since bilinear has smoother transitions between texels after interpolation of values. Nearest neighbor tends to produce more aliasing, especially in texture with high frequency detail where transitions between colors are less involved in the texture selection than with bilinear. 
+Level sampling: 
+Speed: level sampling affects the rendering time by affecting the amount of computation required to determine the texture level. Bilinear or trilinear interpolations require additional calculations per pixel, potentially slowing down rendering compared to nearest neighbor level sampling. 
+Memory Usage: If level sampling requires storing multiple mipmaps of varying resolutions, level sampling can have an indirect effect on the resolution. 
+Antialiasing power: Level sampling helps textures maintain quality across different viewing distances, reducing aliasing. Bilinear and trilinear level sampling smooth transitions between mip level, again reducing aliasing. 
+Number of Samples per Pixel: 
+Speed: higher sample rates slow down rendering time due to the additional computations needed for each pixel. 
+Memory Usage: higher sample rates require more memory usage to store the increased number of samples within the sample_buffer. Higher sample rates directly require a larger sample_buffer array. 
+Antialiasing power: Increasing the number of samples reduces aliasing by representing more details about each pixel. Super sampling averages the results of the samples from each pixel, making smoother transitions in areas with high frequency detail. 
+Using a png file you find yourself, show us four versions of the image, using the combinations of L_ZERO and P_NEAREST, L_ZERO and P_LINEAR, L_NEAREST and P_NEAREST, as well as L_NEAREST and P_LINEAR.
+L_ZERO and P_NEAREST
+L_ZERO and P_LINEAR
+L_NEAREST and P_NEAREST
+L_NEAREST and P_LINEAR
+Extra credit: If you implemented any extra filtering methods, describe them and show comparisons between your results with the other above methods.
+
+
+
 	</body>
 </html>
