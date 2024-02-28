@@ -11,6 +11,33 @@
 				<br>
 		
 				<!-- Add overview here --> 
+
+				This assignment develops methods for surface modeling: Bezier curve/surface evaluation and mesh processing. Through this assignment we developed skills in algorithm design and interaction with the half-edge data structure used for representing meshes. It was interesting to interact with the bezier curves by moving the control points, and interesting to see the algorithms from the assignment applied onto the surface of a teapot. 
+
+				<br>
+				<br>
+				In part 1, we implement de Casteljau’s algorithm used for evaluating points along a bezier curve. The algorithm, and our implementation works by repeatedly subdividing the intervals between the provided control points and computing linear interpolation until we arrive at one single point. This algorithm is used for representing smooth curves. The largest implementation difficulty was making sure we properly understood the algorithm. 
+
+				<br>
+				<br>
+				In part 2, we extend the bezier curve evaluation to points on 3D surfaces: we interpolate between 3D control points in both u and v directions. We achieved this by implementing 
+
+				evaluateStep, evaluate1D, and evaluate which work together by first applying de Casteljau’s in the u direction and then in the v to arrive at one single point. The largest difficulty here was conceptualizing how we would apply the algorithm in both the u and the v directions. 
+
+				<br>
+				<br>
+				In part 3, we begin working with the half-edge data structure for representing triangle meshes. We begin by implementing a function for computing the area-weighted vertex normals. In this function, we iterate through the faces which include the vertex using the data structure and use the cross product of two of its edges to find the normal. We then scale this normal by the area of the triangle and accumulate it to our “total normal” to obtain the area weighted vertex normal. The largest difficulty here was learning to work the new data structure. 
+				<br>
+				<br>
+				In part 4, 
+				<br>
+				<br>
+				In part 5, 
+				<br>
+				<br>
+				In part 6, 
+				<br>
+				<br>
 			</p>
 
 			<h1> Part 1 :</h1>
