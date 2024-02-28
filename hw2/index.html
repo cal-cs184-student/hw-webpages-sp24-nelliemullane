@@ -29,13 +29,15 @@
 				In part 3, we begin working with the half-edge data structure for representing triangle meshes. We begin by implementing a function for computing the area-weighted vertex normals. In this function, we iterate through the faces which include the vertex using the data structure and use the cross product of two of its edges to find the normal. We then scale this normal by the area of the triangle and accumulate it to our “total normal” to obtain the area weighted vertex normal. The largest difficulty here was learning to work the new data structure. 
 				<br>
 				<br>
-				In part 4, 
+				In part 4, we implement the edgeflip method, which takes in an edge as a parameter and rewires the edge. Before implementing the method, we had to make sure that we were proficient with the halfedgeMesh class. We read the primer and used it in our implementation. In this method, we collect all the elements that will be affected by the operation. Then we reassign all the elements so that the pointers all point to their corresponding elements. This is done using a diagram we drew which helped simplify the process.
+
 				<br>
 				<br>
-				In part 5, 
+				In part 5, the implementation of the edgesplit operation was required. To tackle this problem we first drew a diagram of both the before and after states. We made sure to label all the elements that will be affected by the split. Then we collected all those elements in the code. To collect an element we had to traverse through the mesh. Once we collected the elements, we allocated new elements that we will use when reassigning the values. For the task of value reassignment, we followed the diagram like a blueprint and exhaustively updated all the pointers.
 				<br>
 				<br>
-				In part 6, 
+				In part 6, we were tasked with the implementation of mesh upsampling. It is an operation that takes in a mesh and makes that mesh smoother. To upsample a mesh we chose the algorithm of Loop subdivision. This algorithm first precomputes all the vertices' positions. Then we subdivide each triangle using a 4-1 subdivision. In this step each triangle is split and then an edge gets flipped. The final stage of this algorithm is to update the positions of the vertices to the precomputed ones.
+
 				<br>
 				<br>
 			</p>
@@ -136,6 +138,23 @@
 				<br>
 		
 				<!-- Add text  --> 
+				Briefly explain how you implemented the edge flip operation and describe any interesting implementation / debugging tricks you have used.
+				<br>
+				<br>
+				We looked through the spec and found the primer for the halfedgeMesh class. This is how we learned to modify the given mesh. Then at the bottom of the primer, there was a useful guide on how to implement edge operations. In the guide, we noticed an image with the before and after of the mesh. We then used the image to describe to the computer how we wanted the mesh to be connected using the after as a blueprint. Having the image written and elements labeled made it easy to write the method. The first stage of our implementation is collecting all the elements from the before pictures. this will help us reference them faster, as well as have a list of them. Then we reassigned all the pointers in the mesh to make them the same as the after diagram.
+				<br>
+				<br>
+				Show screenshots of the teapot before and after some edge flips
+				<br>
+				<img src="bez_teapot.png" > 
+				<img src="flip_teapot.png" > 
+				<br> 
+				Write about your eventful debugging journey, if you have experienced one.
+				<br> 
+				<br> 
+				Fortunately using the diagrams saved us from having a hard debugging journey. We made sure to input all the values correctly the first time.
+
+
 			</p>
 
 			<h1> Part 5 :</h1>
@@ -143,11 +162,66 @@
 				<br>
 		
 				<!-- Add text  --> 
+
+				Briefly explain how you implemented the edge split operation and describe any interesting implementation / debugging tricks you have used.
+				<br>
+				<br>
+				The edge split operation felt the same as the flip operation. This is because we sketched a labeled diagram of what the mesh looks like after the split. we made sure to label everything correctly, then wrote it into code. The only difference was we had to create new elements. The first step was to collect all the elements in labeled variables. Then we allocated elements using the provided methods as needed. Finally, all that is left to do is reassign all the elements. We made sure to be exhaustive and to reassign every element’s pointers, even the pointers that stay the same.
+				<br>
+				<br>
+				Show screenshots of a mesh before and after some edge splits.
+				<br>
+				<img src="bez_teapot.png" > 
+				<img src="slipt_tea.png" > 
+				<br>
+				Show screenshots of a mesh before and after a combination of both edge splits and edge flips.
+				<br>
+				<img src="bez_teapot.png" > 
+				<img src="split_and_flip_tea.png" >
+				<br>
+				Write about your eventful debugging journey, if you have experienced one.
+				<br>
+				<br>
+				Similarly to part 4, we fortunately did not have a hard time debugging as we were careful in our initial implementation and checked over our code to find any minor bugs we had.
+
+
+				<br>
+				If you have implemented support for boundary edges, show screenshots of your implementation properly handling split operations on boundary edges.
+				<br>
+				<img src="split_boundary.png" > 
+				<img src="split_boundary_2.png" >
+				<br>
+
 			</p>
 
 			<h1> Part 6 :</h1>
 			<p>
 				<br>
+				Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.
+				<br>
+				<br>
+				To implement loop subdivision, we started by iterating over all the vertices and summing the positions of all the neighboring vertices (This was done using a while loop). We weighted the original position with the sum of the neighbors as was demanded by the spec. For every vertex, we stored that vector in the newPosition variable. The next step is to iterate through the edges and add them to a list (to make sure you know these are the old edges), and finally update their position according to the vertices. The third step is to split all the edges that were added to the list. After every split, you have to make sure that you update isNew based on the vertices of each newly added edge. Then flip the edges based on the vertices they touch. The final step is to move all the vertices newPosition variables to their respective position variables.
+				<br>
+				<br>
+				Take some notes, as well as some screenshots, of your observations on how meshes behave after loop subdivision. What happens to sharp corners and edges? Can you reduce this effect by pre-splitting some edges?
+				<br>
+				<br>
+				Using the below cow as an example, sharp edges, and corners tend to become much smoother and more rounded since they are being averaged by neighboring vertices. The triangles become smaller which allows for the cow's ears and jaw to go from being quite jagged to smooth. 
+				<br>
+				Pre-splitting edges could help preserve edges by introducing more vertices along the edges we want to keep sharp. Having more vertices gives the subdivision algorithm more vertices along the edge that it must consider while averaging which leads the algorithm to better capture the detail of the edge as well as giving loop subdivision more triangles to split.
+				<br>
+				<img src="cow_1.png" > 
+				<img src="cow_2.png" >
+				<img src="cow_3.png" >
+				<br>
+				Load dae/cube.dae. Perform several iterations of loop subdivision on the cube. Notice that the cube becomes slightly asymmetric after repeated subdivisions. Can you pre-process the cube with edge flips and splits so that the cube subdivides symmetrically? Document these effects and explain why they occur. Also explain how your pre-processing helps alleviate the effects.
+				<br> 
+				<br>
+				The effects of flipping an edge would depend on the chosen edge. Sometimes the flip makes an indent in the cube which doesn’t help the symmetry. When you flip the edge in front of the camera when loading in, you mess up the symmetry of the cube. Splitting edges proved more successful in adding symmetry to the cube. We figured that if we split all the sides of the cube into an x. Then the cube is symmetrical, and then whatever loop subdivision does to one side it should do to the other side.In the preprocessed cube we can see there are now four triangles per face, then as we subdivide the cube, it still rounds but we have a symmetrically rounded version of the cube.
+				<br>
+				<img src="pre_proc_cube.png" > 
+				<img src="symmetric_super_cube.png" >
+
 		
 				<!-- Add text  --> 
 			</p>
