@@ -1,0 +1,35 @@
+img {
+    width: auto;
+    height: 200px;
+    border: 4px solid #555;
+    border-radius: 8px;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    margin-left: 60px;
+    margin-top: 20px;
+  }
+
+  img:hover {
+    transform: scale(2.4);
+  }
+
+  h1 {
+    color: navy;
+    font-family: Arial, sans-serif;
+  }
+
+  h2 {
+    color: navy;
+    font-family: Arial, sans-serif;
+  }
+
+  .container {
+    border: 6px solid navy; 
+    padding: 60px; 
+    border-radius: 60px;
+  }
+
+  p {
+    text-align: justify;
+    color: #0a6685;
+  }
