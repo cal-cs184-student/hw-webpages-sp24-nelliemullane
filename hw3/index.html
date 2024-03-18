@@ -2,7 +2,7 @@
 	<head>
         <title>CS 184 HW1 Website Writeup</title>
         <meta name="author" content="Nellie E Mullane, Liam Gottesman">
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="style.css">
 	</head>
 	<body>
 		<div class="container">
@@ -19,7 +19,7 @@
 				<br>
 				In part 4, we develop the ability for the pipeline to add indirect lighting and global illumination to our scenes. This gave our images higher levels of realism. We use recursion accumulating one bounce radiance estimate for each sampled bounce of a ray, until we have accumulated a max ray depth number of illumination estimates. We also make sure to add zero bounce randiace to the sum total. The most challenging aspect was making sure we conceptually understand how to approach the recursion, we worked this out by conceptualizing and discussing before implementing. 
 				<br> 
-				in part 5, 
+				In part 5, we ameliorate the process of raytracing high sample per pixel images by dynamically deciding the number of samples per pixel. Adaptive Sampling achieves this by deciding the number of samples based on their mean and variance. It allows pixels where the uncertainty is high to collect more samples while reducing the number of samples in pixels where the uncertainty is low. Thus, generating high sample per pixel images more efficiently than we previously implemented. Our approach included researching Adaptive Sampling, then we began writing code debugging as we went. Our implementation had three stages, the first stage of which included the initialization of several variables such as the sum of samples, the squared sum of samples, the sum of est_radiance vectors, and the number of samples taken so far. In the next stage, we repetitively perform a series of steps until we the convergence condition is met. The series consists of sampling a ray, and then estimating global radiance, updating all the sum values and the number of samples, and calculating the mean, variance, and convergence criterion. The convergence condition is checking that the convergence criterion is less than the max tolerance * mean or that we collected the max number of samples. The final stage is updating the Sample Buffer and the Sample Count Buffer with the converged values.
 
 			</p>
 
@@ -121,10 +121,10 @@
 				 Show images with normal shading for a few small .dae files.
 				 <br> 
 				 <br> 
-				<img src="normal_cow.png" > 
-				<img src="normal_teapot.png" > 
-				<img src="normal_bunny.png" > 
-				<img src="normal_spheres.png" > 
+				<img src="images/normal_cow.png" > 
+				<img src="images/normal_teapot.png" > 
+				<img src="images/normal_bunny.png" > 
+				<img src="images/normal_spheres.png" > 
 			</p>
 			</p>
 			<h1> Part 2 :</h1>
@@ -149,11 +149,11 @@ We then update the bounding box to be the union of the two children bounding box
 <br><br>
 Show images with normal shading for a few large .dae files that you can only render with BVH acceleration.
 <br><br>
-<img src="creepyMan.png" >
-<img src="angel.png" >  
-<img src="beast.png" > 
-<img src="part2_dragon.png" > 
-<img src="wallE.png" > 
+<img src="images/creepyMan.png" >
+<img src="images/angel.png" >  
+<img src="images/beast.png" > 
+<img src="images/part2_dragon.png" > 
+<img src="images/wallE.png" > 
 <br><br>
 Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis.
 <br><br>
@@ -227,19 +227,19 @@ After accumulating all the radiances for the light sources and their samples, we
 <br><br> 
 Show some images rendered with both implementations of the direct lighting function.
 <br><br> 
-<img src="low_sample_hemisphere .png" >
+<img src="images/low_sample_hemisphere .png" >
 <br> ^ low sampling with hemisphere 
 <br> 
-<img src="high_sample_hem_bunny.png" >
+<img src="images/high_sample_hem_bunny.png" >
 <br> ^ high sampling with hemisphere 
 <br> 
-<img src="low_sample_direct_bunny.png" >
+<img src="images/low_sample_direct_bunny.png" >
 <br> ^ low sampling with out hemisphere 
 <br> 
-<img src="high_sample_direct_bunny.png" >
+<img src="images/high_sample_direct_bunny.png" >
 <br> ^ high sampling with out hemisphere 
 <br> 
-<img src="high_sample_direct_dragon.png" >
+<img src="images/high_sample_direct_dragon.png" >
 <br> ^ high sample dragon with no hemisphere<br> 
 <br> 
 <br> 
@@ -248,10 +248,10 @@ Focus on one particular scene with at least one area light and compare the noise
 <br> 
 As the -l flag controls the number of rays cast towards each light source when we compute lighting, increasing the light rays leads to a more accurate estimation of how the light interacts with surfaces. In particular, we see more accuracy in the softness of shadows and distribution of light as  the light rays increase. Keeping the -s flag at 1 sample per pixel isolates the effect of changing the number of light rays on the noise levels We can see at one light ray, the shadows are very pixelated, and there are higher noise levels; this is occurs because the variance is light estimation is very high with only one sample. At 4 light rays, the shadows and noise levels begin to soften but are still noticeably unrealistic. At 16 light rays, we see the image begin to converge to a more realistic version that occurs at 64 light rays where there are very low noise levels and well softened shadows. 
 <br> 
-<img src="CBbunny_1.png" >
-<img src="CBbunny_4.png" >
-<img src="cbbunny_16.png" >
-<img src="cbbunny_64.png" >
+<img src="images/CBbunny_1.png" >
+<img src="images/CBbunny_4.png" >
+<img src="images/cbbunny_16.png" >
+<img src="images/cbbunny_64.png" >
 <br> 
 <br> 
 Compare the results between uniform hemisphere sampling and lighting sampling in a one-paragraph analysis.
@@ -278,10 +278,10 @@ Finally we return the accumulated (or result form max ray depth) emission estima
 Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.
 <br><br>
 <!-- update these--> 
-<img src="global_bunny.png" >
-<img src="global_sphere.png" >
-<img src="global_bench.png" >
-<img src="global_blob.png" >
+<img src="images/global_bunny.png" >
+<img src="images/global_sphere.png" >
+<img src="images/global_bench.png" >
+<img src="images/global_blob.png" >
 
 <!-- add images here-->
 <br><br>
@@ -294,11 +294,11 @@ On the other hand, the indirectly illuminated image displays how light bounces o
 direct: 
 <br><br>
 
-<img src="CBbunny_direct.png" >
+<img src="images/CBbunny_direct.png" >
 <br><br> 
 indirect: 
 <br><br> 
-<img src="CBbunny_indirect.png" >
+<img src="images/CBbunny_indirect.png" >
 <br><br>
 
 
@@ -310,22 +310,22 @@ For CBbunny.dae, render the mth bounce of light with max_ray_depth set to 0, 1, 
 Isolating with isAccumBounces = false means we are able to analyze the incremental contribution of each  layer of indirect illumination. In the 2nd and 3rd bounces of light, we see the scene transition from a more artificial scene to ones that more closely reflect a real world ambient lighting. There is an increased sense of depth and realism beginning to emerge in the 2nd and 3rd bounces of light. We also see the images darken as the radiance diminishes and the ray depth increases. 
 
 <br><br>
-<img src="CBbunny_0_nA.png" >
-<img src="CBbunny_1_nA.png" >
-<img src="CBbunny_2_nA.png" >
-<img src="CBbunny_3_nA.png" >
-<img src="CBbunny_4_nA.png" >
-<img src="CBbunny_5_nA.png" >
+<img src="images/CBbunny_0_nA.png" >
+<img src="images/CBbunny_1_nA.png" >
+<img src="images/CBbunny_2_nA.png" >
+<img src="images/CBbunny_3_nA.png" >
+<img src="images/CBbunny_4_nA.png" >
+<img src="images/CBbunny_5_nA.png" >
 <!-- add images and text here-->
 <br><br>
 For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, 4, and 5(the -m flag). Use 1024 samples per pixel.
 <br><br>
-<img src="CBbunny_0_nA.png" >
-<img src="CBbunny_1_nR.png" >
-<img src="CBbunny_2_nR.png" >
-<img src="CBbunny_3_nR.png" >
-<img src="CBbunny_4_nR.png" >
-<img src="CBbunny_5_nR.png" >
+<img src="images/CBbunny_0_nA.png" >
+<img src="images/CBbunny_1_nR.png" >
+<img src="images/CBbunny_2_nR.png" >
+<img src="images/CBbunny_3_nR.png" >
+<img src="images/CBbunny_4_nR.png" >
+<img src="images/CBbunny_5_nR.png" >
 
 <!-- add images and text here-->
 <br><br>
@@ -333,12 +333,12 @@ For CBbunny.dae, output the Russian Roulette rendering with max_ray_depth set to
 <br><br>
 For these examples, as well as the ones in the previous bullet point, we see as the max ray depth increases, the images  begin to look more realistic as the global illumination more accurately captures the way light interacts with a scene.In the case of the images without russian roulette, at a certain point they give a sense of being overly lit.
 <br><br>
-<img src="CBbunny_4.png" >
-<img src="CBbunny_3.png" >
-<img src="CBbunny_2.png" >
-<img src="CBbunny_1.png" >
-<img src="CBbunny_0.png" >
-<img src="CBbunny_100.png" >
+<img src="images/CBbunny_4.png" >
+<img src="images/CBbunny_3.png" >
+<img src="images/CBbunny_2.png" >
+<img src="images/CBbunny_1.png" >
+<img src="images/CBbunny_0.png" >
+<img src="images/CBbunny_100.png" >
 
 <!-- add images and text here-->
 <br><br>
@@ -347,27 +347,35 @@ Pick one scene and compare rendered views with various sample-per-pixel rates, i
 As the number of samples per pixel increases, we see an increase in the render quality and realism and a reduction in noise and more accurate lighting . The main benefit of the lower samples sizes was quick render times. 
 <br><br>
 <!-- add images and text here-->
-<img src="1_CBbunny.png" >
-<img src="2_CBbunny.png" >
-<img src="4_CBbunny.png" >
-<img src="8_CBbunny.png" >
-<img src="16_CBbunny.png" >
-<img src="64_CBbunny.png" >
-<img src="1024_CBbunny.png" >
+<img src="images/1_CBbunny.png" >
+<img src="images/2_CBbunny.png" >
+<img src="images/4_CBbunny.png" >
+<img src="images/8_CBbunny.png" >
+<img src="images/16_CBbunny.png" >
+<img src="images/64_CBbunny.png" >
+<img src="images/1024_CBbunny.png" >
 <br><br>
 
 			</p>
 			<h1> Part 5:</h1>
 			Explain adaptive sampling. Walk through your implementation of the adaptive sampling.
 			<br><br>
+			Adaptive sampling is a technique used in path tracing. It utilizes Monty Carlo integration to figure out the smallest number of samples needed to approximate the radiance through a pixel dynamically. It does this by using the mean and standard deviation of the samples collected.
+			<br>We need to keep track of many values: the squared and linear sum of the illumination values of the samples collected over the pixel, the convergence of the pixel (I), the number of samples collected so far, and the sum of the estimated radiance vectors. Then, we repetitively collect a sample, calculate its respective ray, calculate the ray’s estimated radiance using global illumination, update the value of all 3 sums, calculate the I then repeat these steps until I > max tolerance * average or until we collected the limit number of samples.
 
 			<!-- add text  here-->
 			<br><br>
 			Pick two scenes and render them with at least 2048 samples per pixel. Show a good sampling rate image with clearly visible differences in sampling rate over various regions and pixels. Include both your sample rate image, which shows your how your adaptive sampling changes depending on which part of the image you are rendering, and your noise-free rendered result. Use 1 sample per light and at least 5 for max ray depth.
 			<br><br>
+			<img src="images/bunny.png">
+			<img src="images/bunny_rate.png">
+			<img src="images/dragon.png">
+			<img src="images/dragon_rate.png">
+			
+			
 
 			<!-- add images  here-->
 			<p>
-
+				
 	</body>
 </html>
