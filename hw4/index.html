@@ -9,7 +9,7 @@
 			<h1>OVERVIEW :</h1>
 			<p>
 				<br>
-				This project 
+				In this project, we embarked on an in-depth exploration into cloth simulation, crafting a comprehensive system that traversed through layers of complexity, from the foundational grid of masses and springs to the nuanced application of shaders for realistic rendering. We initiated our journey with the construction of a grid in Cloth.cpp, where each point mass was carefully positioned and pinned. This foundation allowed us to dive into the simulation, employing the simulate method to iteratively update point mass positions through the principles of Verlet integration and the careful calculation of forces, both external like gravity and internal from spring corrections according to Hooke’s law. Progressing further, we tackled the challenges of collision handling, enabling our cloth to interact realistically with spherical and planar objects within its environment, a task that proved its worth in adding depth to the simulation. The realization of self-collision functionality introduced an additional layer of realism, optimizing computational efficiency through a spatial map to manage the interactions of closely positioned point masses. The culmination of our project was marked by the sophisticated implementation of shaders, starting from diffuse shading to the Blinn-Phong reflection model, each step meticulously designed to enhance the visual realism of our cloth. This progression not only involved the technical application of textures and bump mapping but also demanded a keen eye for detail to overcome obstacles such as the misdirection of surface normals, ensuring that every fold and crease of our cloth was rendered with the utmost fidelity. 
 				<br>
 				In part 1, our goal was to build a grid of masses and springs given a json representation of the cloth. We implemented the function buildGrid in the Cloth.cpp file. We iterate through all the point mass positions and generate the point masses while setting their positions and pinning them when necessary. This part had no major problems as it required carefully following the spec.
 				<br>
@@ -43,12 +43,35 @@
 				<br>
 				Describe the effects of changing the spring constant ks; how does the cloth behave from start to rest with a very low ks? A high ks?
 				<br>
-
+				The effects of changing the spring constant increases the resistance of the springs to compressing and expanding. This is emphasized by the cloth bending more as you decrease Hooke’s constant.
+				<br>
 				What about for density?
+				<br>
+				As you increase the density the mass of the cloth increases, and in the case of pinned2 the cloth’s final resting position hangs lower when the mass is higher. This is because more force from the springs need to be applied to counteract the gravity and end in a static equilibrium. This higher tension on the springs causes them to elongate.
 				<br>
 				What about for damping?
 				<br>
+				Damping is one of the ways the cloth dissipates energy. Higher damping values lead to a quicker reduction in the oscillation and movement of the cloth, making it settle faster but potentially stifling some of the more fluid and realistic behaviors. Lower damping allows the cloth to oscillate more freely, which can result in more dynamic and realistic movements but may also cause the cloth to take longer to come to rest. The damping value should depend on what type of cloth you are trying to simulate.
+				<br>
 				For each of the above, observe any noticeable differences in the cloth compared to the default parameters and show us some screenshots of those interesting differences and describe when they occur.
+				<br>
+				<ol type="1">
+					<li>All values are default but density is lowered to 1.</li>
+					<image src="images/2_density--.png">
+				<br>
+				The springs in the cloth have a lower mass to support, making them less tensioned. When springs are less tensioned, they will converge in a retracted state.
+					<li>All values are default.</li>
+					<image src="images/2_init.png">
+				<br>
+				The springs in this case have to carry 10 times more mass. That is visible on the top side of the cloth. 
+					<li>All values are default but the density is increased to ten thousand.</li>
+					<image src="images/2_density++.png">
+				<br>
+				In this case, the mass was increased so that the cloth was visibly tensioned and hanging lower.
+				</ol>
+				<br>
+				As you increase the density of the cloth the center of mass of the cloth will converge lower.
+				<br>
 				<br>
 				Show us a screenshot of your shaded cloth from scene/pinned4.json in its final resting state! If you choose to use different parameters than the default ones, please list them.
 				<br>
@@ -77,9 +100,52 @@
 				<image src="images/3_plane.png">
 			</p>
 			<h1> Part 4 :</h1>
+
 			<p>
-				
+				Show us at least 3 screenshots that document how your cloth falls and folds on itself, starting with an early, initial self-collision and ending with the cloth at a more restful state (even if it is still slightly bouncy on the ground).
+				<br>
+				Vary the density as well as ks and describe with words and screenshots how they affect the behavior of the cloth as it falls on itself.
+				<br>
 			</p>
+			<table>
+				<tr>
+					<th></th>
+					<th><p> </p>initial </th>
+					<th><p> </p> medial</th>
+					<th><p> </p> final </th>
+				</tr>
+				<tr>
+					<th><p> initial conditions</p></th>
+					<th><image src="images/4_initial_normal.png"></th>
+					<th><image src="images/4_medial_normal.png"></th>
+					<th><image src="images/4_final_normal.png"></th>
+				</tr>
+				<tr>
+					<th><p> decreased density </p></th>
+					<th><image src="images/4_initial_density--.png"></th>
+					<th><image src="images/4_medial_density--.png"></th>
+					<th><image src="images/4_final_density--.png"></th>
+				</tr>
+				<tr>
+					<th><p> increased density </p></th>
+					<th><image src="images/4_initial_density+.png"></th>
+					<th><image src="images/4_medial_density+.png"></th>
+					<th><image src="images/4_final_density+.png"></th>
+				</tr>
+				<tr>
+					<th><p> decreased spring constant </p></th>
+					<th><image src="images/4_initial_ks--.png"></th>
+					<th><image src="images/4_medial_ks--.png"></th>
+					<th><image src="images/4_final_ks--.png"></th>
+				</tr>
+				<tr>
+					<th><p> increased spring constant </p></th>
+					<th><image src="images/4_initial_ks++.png"></th>
+					<th><image src="images/4_medial_ks++.png"></th>
+					<th><image src="images/4_final_ks++.png"></th>
+				</tr>
+			  </table>
+
 			<h1> Part 5:</h1>
 			Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.
 
